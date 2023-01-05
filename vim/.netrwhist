@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/home/zhwren/Workfs/Qt/generator/utils'
+let g:netrw_dirhist_2='/home/zhwren/Downloads/Generator/uvm_testbench_gen'
+let g:netrw_dirhist_3='/home/zhwren/Desktop/systemverilog.vim-master/syntax'
+let g:netrw_dirhist_4='/home/zhwren/Downloads/Generator/uvm_tb_gen/uart/rtl'

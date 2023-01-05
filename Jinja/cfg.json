@@ -1,0 +1,28 @@
+{
+    "proj_name"  :"nxx",
+    "module_name":"mxx",
+
+    "agents":{
+        "sdb":{
+            "up_dn_vld":14,
+            "up_data"  :1024,
+            "down_data":1024
+        },
+        "sxa":{
+            "lsb_vld" :1,
+            "lsb_addr":12,
+            "msb_vld" :1,
+            "msb_addr":12
+        }
+    },
+    "env":{
+        "sdb":{
+            "inst_num":1,
+            "inst_type":"master"
+        },
+        "sxa":{
+            "inst_num":1,
+            "inst_type":"slave"
+        }
+    }
+}
