@@ -44,6 +44,10 @@ class {{intf}}_xaction extends uvm_sequence_item;
 {% endfor %}
     `uvm_object_utils_end
 
+{% for field in cfg.agent[intf]["field"] %}
+    constraint {{field}}_constrant;
+{% endfor %}
+
     extern function new(string name="{{intf}}_xaction");
 endclass
 
@@ -55,5 +59,21 @@ endclass
 function {{intf}}_xaction::new(string name="{{intf}}_xaction");
     super.new(name);
 endfunction
+
+{% for field in cfg.agent[intf]["field"] %}
+/*******************************************************************************
+** Time        : {{time}}                                          **
+** Author      : generator                                                    **
+** Description : Create                                                       **
+*******************************************************************************/
+constraint {{intf}}_xaction::{{field}}_constrant {
+    {{field}} dist {
+        0 := plus_{{intf}}::{{field}}_wt_min,
+        [1:2**{{intf}}_dec::{{field|upper}}_WIDTH-2] := plus_{{intf}}::{{field}}_wt_mid,
+        2**{{intf}}_dec::{{field|upper}}_WIDTH-1 := plus_{{intf}}::{{field}}_wt_max
+    };
+}
+
+{% endfor %}
 
 `endif

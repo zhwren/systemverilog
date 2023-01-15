@@ -47,13 +47,13 @@ function void connector::regist_input_port(string id, ref uvm_blocking_get_expor
     uvm_tlm_analysis_fifo #(T) t_fifo;
 
     if (!m_fifo.exists(id)) begin
-        t_fifo = new($sformatf("%s_fifo", id), this);
+        t_fifo = new($sformatf("%s_fifo", id), null);
         m_fifo[id] = t_fifo;
     end else begin
         t_fifo = m_fifo[id];
     end
 
-    ip = new($sformatf("%s_export", id), this);
+    ip = new($sformatf("%s_export", id), null);
     ip.connect(t_fifo.blocking_get_export);
 endfunction
 
@@ -66,13 +66,13 @@ function void connector::regist_output_port(string id, ref uvm_analysis_port#(T)
     uvm_tlm_analysis_fifo #(T) t_fifo;
 
     if (!m_fifo.exists(id)) begin
-        t_fifo = new($sformatf("%s_fifo", id), this);
+        t_fifo = new($sformatf("%s_fifo", id), null);
         m_fifo[id] = t_fifo;
     end else begin
         t_fifo = m_fifo[id];
     end
 
-    op = new($sformatf("%s_port", id), this);
+    op = new($sformatf("%s_port", id), null);
     op.connect(t_fifo.analysis_export);
 endfunction
 

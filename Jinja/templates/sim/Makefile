@@ -3,14 +3,14 @@ target := simv
 
 all : ${target}
 
-UTILS :=
+UTILS := -F /home/zhwren/Workfs/systemverilog/Jinja/common/common_flist.f
 {% for agent in cfg.agent.keys() %}
-UTILS += -F ../utils/{{agent}}/{{agent}}_flist.f
+UTILS += -F ../agent/{{agent}}/{{agent}}_flist.f
 {% endfor %}
 
 TOP := ../tb/testbench.sv
-RTL := -F ../rtl/design.f
-ENV := -f {{cfg.proj}}_{{cfg.module}}_flist.f
+#RTL := -F ../rtl/design.f
+ENV := -F ../env/{{cfg.proj}}_{{cfg.module}}_flist.f
 
 ${target} : ${TOP}
 	vcs -full64 -sverilog -cm line+cond+fsm -${UVM_HOME}/src/dpi/uvm_dpi.cc \
