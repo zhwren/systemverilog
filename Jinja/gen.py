@@ -1,11 +1,35 @@
 #!/bin/python3
-##########################################################
-## Author       : generator                             ##
-## Email        : zhwren0211@whu.edu.cn                 ##
-## Last modified: 2022-09-13 11:30:21                   ##
-## Filename     : generator.py                          ##
-## Discription  : Auto UVM testbench generator          ##
-##########################################################
+################################################################################
+##                                 _ooOoo_                                    ##
+##                                o8888888o                                   ##
+##                                88" . "88                                   ##
+##                                (| -_- |)                                   ##
+##                                 O\ = /O                                    ##
+##                             ____/`---'\____                                ##
+##                           .   ' \\| |// `.                                 ##
+##                            / \\||| : |||// \                               ##
+##                          / _||||| -:- |||||- \                             ##
+##                            | | \\\ - /// | |                               ##
+##                          | \_| ''\---/'' | |                               ##
+##                           \ .-\__ `-` ___/-. /                             ##
+##                        ___`. .' /--.--\ `. . __                            ##
+##                     ."" '< `.____<|>_/___.' >'"".                          ##
+##                    | | : `- \`.;` _ /`;.`/ - ` : | |                       ##
+##                      \ \ `-. \_ __\ /__ _/ .-` / /                         ##
+##              ======`-.____`-.___\_____/___.-`____.-'======                 ##
+##                                 `=---='                                    ##
+##                                                                            ##
+##              .............................................                 ##
+##                     Buddha bless me, No bug forever                        ##
+##                                                                            ##
+################################################################################
+## Author       : generator                                                   ##
+## Email        : zhwren0211@whu.edu.cn                                       ##
+## Last modified: 2023-01-13 21:11:59                                         ##
+## Filename     : gen.py                                                      ##
+## Phone Number :                                                             ##
+## Discription  :                                                             ##
+################################################################################
 
 import os
 import re
@@ -13,62 +37,76 @@ import sys
 import json
 import time
 import argparse
-from jinja2 import Template,FileSystemLoader,Environment
+from jinja2 import FileSystemLoader,Environment
 
-class generator:
-    """
-    """
+class MyTemplate:
+    def __init__(self, name, template):
+        self.name     = name
+        self.template = template
 
-    def __init__(self, config_file, output_dir):
-        self.config_file = open(config_file, "r")
-        self.output_dir  = output_dir
-        self.config_data = json.load(self.config_file)
-        self.mkdir()
-        self.envTemp   = {}
-        self.utilsTemp = {}
-        self.templateInit(self.envTemp,   "env"  )
-        self.templateInit(self.utilsTemp, "utils")
-        self.time = time.strftime("%Y-%m-%d %H:%M:%S")
+class Generator:
+    def __init__(self):
+        self.loader    = FileSystemLoader(os.path.join(sys.path[0], "templates"))
+        self.env       = Environment(loader=self.loader, trim_blocks=True)
+        self.templates = {}
+        self.GetAllTemplates()
+        pass
 
-    def templateInit(self, dic, subdir):
-        loader = FileSystemLoader(os.path.join(sys.path[0], subdir))
-        env    = Environment(loader=loader, trim_blocks=True)
-        for filename in os.listdir(os.path.join(sys.path[0], subdir)):
-            print(filename)
-            dic[filename] = env.get_template(filename)
+    def GetAllTemplates(self):
+        templatePath = os.path.join(sys.path[0], "templates")
+        subdirs = [i for i in os.listdir(templatePath) if os.path.isdir(os.path.join(templatePath, i))]
+        for subdir in subdirs:
+            self.templates[subdir] = []
+            templatePath = os.path.join(sys.path[0], "templates", subdir)
+            subfiles = [i for i in os.listdir(templatePath) if os.path.isfile(os.path.join(templatePath, i))]
+            for subfile in subfiles:
+                template = MyTemplate(subfile, self.env.get_template(os.path.join(subdir, subfile)))
+                self.templates[subdir].append(template)
+        pass
 
-    def mkdir(self):
-        cmd = "mkdir -p %s/utils/" % self.output_dir
-        for key in self.config_data['agents'].keys():
-            os.system(cmd + key)
-        os.system("mkdir -p %s/env" % self.output_dir)
+    def Generate(self, opt):
+        f = open(opt.i, "r")
+        self.cfg = json.load(f)
+        f.close()
+        self.dst = opt.o
 
-    def run(self):
-        for ifname in self.config_data['agents'].keys():
-            self.genOneAgent(ifname)
-        self.genEnv()
+        for subdir in self.templates.keys():
+            if (subdir == "agent"):
+                self.GenerateAgents()
+            else:
+                self.GenerateOtherFiles(subdir)
+        pass
 
-    def genOneAgent(self, ifname):
-        fields = self.config_data['agents'][ifname]
-        for lastname in self.utilsTemp.keys():
-            ofname = os.path.join(self.output_dir, "utils", ifname, ifname + "_" + lastname)
-            o = open(ofname, "w")
-            o.write(self.utilsTemp[lastname].render(ifname=ifname, fields=fields, time=self.time))
-            o.close()
+    def GenerateAgents(self):
+        for intf in self.cfg["agent"].keys():
+            for template in self.templates['agent']:
+                dest_path = os.path.join(self.dst, "agent", intf)
+                if (not os.path.exists(dest_path)):
+                    os.makedirs(dest_path)
+                filename = "{0}_{1}".format(intf, template.name)
+                fo = open(os.path.join(dest_path, filename), "w")
+                fo.write(template.template.render(intf=intf, cfg=self.cfg))
+                fo.close()
+        pass
 
-    def genEnv(self):
-        prjName = self.config_data["proj_name"]
-        modName = self.config_data['module_name']
-        for lastname in self.envTemp.keys():
-            ofname = os.path.join(self.output_dir, "env", prjName + "_" + modName + "_" + lastname)
-            if (lastname == "Makefile"):
-                ofname = os.path.join(self.output_dir, "env", "Makefile")
-            o = open(ofname, 'w')
-            o.write(self.envTemp[lastname].render(cfg=self.config_data, time=self.time))
-            o.close()
+    def GenerateOtherFiles(self, subdir):
+        print(subdir)
+        dest_path = os.path.join(self.dst, subdir)
+        if (not os.path.exists(dest_path)):
+            os.makedirs(dest_path)
+        for template in self.templates[subdir]:
+            filename = "{0}_{1}_{2}".format(self.cfg["proj"], self.cfg["module"], template.name)
+            fo = open(os.path.join(dest_path, filename), "w")
+            fo.write(template.template.render(cfg=self.cfg))
+            fo.close()
+        pass
 
-##########################################################
-def parseInput():
+################################################################################
+## Time        : 2023-01-13 21:12:59
+## Author      : generator
+## Description : Create
+################################################################################
+def ParseInput():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", type=str, default="cfg.json", help="configure filename")
     parser.add_argument("-o", type=str, default=os.getcwd(), help="output dir")
@@ -77,6 +115,6 @@ def parseInput():
     
 ##########################################################
 if __name__ == "__main__":
-    cfg = parseInput()
-    gen = generator(cfg.i, cfg.o)
-    gen.run()
+    opt = ParseInput()
+    gen = Generator()
+    gen.Generate(opt)

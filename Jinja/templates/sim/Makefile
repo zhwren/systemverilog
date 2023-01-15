@@ -4,13 +4,13 @@ target := simv
 all : ${target}
 
 UTILS :=
-{% for agt in cfg.env.keys() %}
-UTILS += -F ../utils/{{agt}}/{{agt}}_filelist.f
+{% for agent in cfg.agent.keys() %}
+UTILS += -F ../utils/{{agent}}/{{agent}}_flist.f
 {% endfor %}
 
-TOP := {{cfg.proj_name}}_{{cfg.module_name}}_top.sv
+TOP := ../tb/testbench.sv
 RTL := -F ../rtl/design.f
-ENV := -f {{cfg.proj_name}}_{{cfg.module_name}}_filelist.f
+ENV := -f {{cfg.proj}}_{{cfg.module}}_flist.f
 
 ${target} : ${TOP}
 	vcs -full64 -sverilog -cm line+cond+fsm -${UVM_HOME}/src/dpi/uvm_dpi.cc \
@@ -21,4 +21,4 @@ clean :
 	/bin/rm -rf simv* csrc vc_hdrs.h ucli.key
 
 run :
-	./simv +UVM_TESTNAME={{cfg.proj_name}}_{{cfg.module_name}}_env
+	./simv +UVM_TESTNAME={{cfg.proj}}_{{cfg.module}}_env
