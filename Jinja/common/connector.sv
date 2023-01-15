@@ -24,7 +24,7 @@
 ********************************************************************************
 ** Author       : generator                                                   **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                      **
-** Last modified: 2023-01-14 12:57:14                                         **
+** Last modified: 2021-01-14 12:57:14                                         **
 ** Filename     : connector.sv                                                **
 ** Phone Number :                                                             **
 ** Discription  :                                                             **
@@ -39,7 +39,7 @@ class connector#(type T=uvm_object) extends uvm_object;
 endclass
 
 /*******************************************************************************
-** Time        : 2023-01-14 12:59:53                                          **
+** Time        : 2021-01-14 12:59:53                                          **
 ** Author      : generator                                                    **
 ** Description : Create                                                       **
 *******************************************************************************/
@@ -58,7 +58,7 @@ function void connector::regist_input_port(string id, ref uvm_blocking_get_expor
 endfunction
 
 /*******************************************************************************
-** Time        : 2023-01-14 13:03:23                                          **
+** Time        : 2021-01-14 13:03:23                                          **
 ** Author      : generator                                                    **
 ** Description : Create                                                       **
 *******************************************************************************/

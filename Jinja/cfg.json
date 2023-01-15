@@ -9,6 +9,13 @@
             "vld"       : ["up_dn_vld"],
             "inst_num"  : 1,
             "inst_type" : "master"
+        },
+        "sdc":{
+            "field"     : ["ack", "bank_id", "bank_addr", "used"],
+            "width"     : [1,     3,         12,          1     ],
+            "vld"       : ["ack"],
+            "inst_num"  : 3,
+            "inst_type" : "master"
         }
     }
 }

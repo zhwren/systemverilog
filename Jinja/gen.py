@@ -25,7 +25,7 @@
 ################################################################################
 ## Author       : generator                                                   ##
 ## Email        : zhwren0211@whu.edu.cn                                       ##
-## Last modified: 2023-01-13 21:11:59                                         ##
+## Last modified: 2021-01-13 21:11:59                                         ##
 ## Filename     : gen.py                                                      ##
 ## Phone Number :                                                             ##
 ## Discription  :                                                             ##
@@ -50,6 +50,7 @@ class Generator:
         self.env       = Environment(loader=self.loader, trim_blocks=True)
         self.templates = {}
         self.GetAllTemplates()
+        self.originNames = ['Makefile', 'testbench.sv', 'module_inst.sv']
         pass
 
     def GetAllTemplates(self):
@@ -69,6 +70,7 @@ class Generator:
         self.cfg = json.load(f)
         f.close()
         self.dst = opt.o
+        self.time = time.strftime("%Y-%m-%d %H:%M:%S")
 
         for subdir in self.templates.keys():
             if (subdir == "agent"):
@@ -85,19 +87,20 @@ class Generator:
                     os.makedirs(dest_path)
                 filename = "{0}_{1}".format(intf, template.name)
                 fo = open(os.path.join(dest_path, filename), "w")
-                fo.write(template.template.render(intf=intf, cfg=self.cfg))
+                fo.write(template.template.render(intf=intf, cfg=self.cfg, time=self.time))
                 fo.close()
         pass
 
     def GenerateOtherFiles(self, subdir):
-        print(subdir)
         dest_path = os.path.join(self.dst, subdir)
         if (not os.path.exists(dest_path)):
             os.makedirs(dest_path)
         for template in self.templates[subdir]:
             filename = "{0}_{1}_{2}".format(self.cfg["proj"], self.cfg["module"], template.name)
+            if (template.name in self.originNames):
+                filename = template.name
             fo = open(os.path.join(dest_path, filename), "w")
-            fo.write(template.template.render(cfg=self.cfg))
+            fo.write(template.template.render(cfg=self.cfg, time=self.time))
             fo.close()
         pass
 
