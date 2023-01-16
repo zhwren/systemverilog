@@ -43,6 +43,7 @@ package {{intf}}_pkg;
     `include "{{intf}}_sequencer.sv"
     `include "{{intf}}_monitor.sv"
     `include "{{intf}}_driver.sv"
+    `include "{{intf}}_cov.sv"
     `include "{{intf}}_agent.sv"
 endpackage
 import {{intf}}_pkg::*;

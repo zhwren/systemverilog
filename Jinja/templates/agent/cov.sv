@@ -25,26 +25,36 @@
 ** Author       : generator                                                   **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                      **
 ** Last modified: {{time}}                                         **
-** Filename     : {{"%-60s"|format([intf, "_agent.sv"]|join)}}**
+** Filename     : {{"%-60s"|format([intf,"_cov.sv"]|join)}}**
 ** Phone Number :                                                             **
 ** Discription  :                                                             **
 *******************************************************************************/
-`ifndef __{{intf|upper}}_AGENT_SV__
-`define __{{intf|upper}}_AGENT_SV__
+`ifndef __{{intf|upper}}_COV_SV__
+`define __{{intf|upper}}_COV_SV__
 
-class {{intf}}_agent extends uvm_agent;
-    int intf_id;
-    {{intf}}_driver    drv;
-    {{intf}}_monitor   mon;
-    {{intf}}_sequencer sqr;
-    {{intf}}_cov       cov;
-
-    `uvm_component_utils_begin({{intf}}_agent)
+class {{intf}}_cov extends uvm_subscriber #({{intf}}_xaction);
+    {{intf}}_xaction tr;
+    `uvm_component_utils_begin({{intf}}_cov)
     `uvm_component_utils_end
+    
+    covergroup {{intf}}_cg;
+{% for i in range(cfg.agent[intf]["field"]|length) %}
+{% set field = cfg.agent[intf]["field"][i] %}
+{% set width = cfg.agent[intf]["width"][i] %}
+        {{field}}_cp : coverpoint tr.{{field}} {
+{% if width == 1 %}
+            bins {{field}}_all[] = {[0:1]};
+{% else %}
+            bins {{field}}_min = {0};
+            bins {{field}}_mid = {[1:2**{{intf}}_dec::{{field|upper}}_WIDTH-2]};
+            bins {{field}}_max = {2**{{intf}}_dec::{{field|upper}}_WIDTH-1};
+{% endif %}
+        }
+{% endfor %}
+        option.pre_instance = 1;
+    endgroup
 
-    extern function new(string name="{{intf}}_agent", uvm_component parent=null);
-    extern function void build_phase(uvm_phase phase);
-    extern function void connect_phase(uvm_phase phase);
+    extern function new(string name="{{intf}}_cov", uvm_component parent=null);
 endclass
 
 /*******************************************************************************
@@ -52,8 +62,10 @@ endclass
 ** Author      : generator                                                    **
 ** Description : Create                                                       **
 *******************************************************************************/
-function {{intf}}_agent::new(string name="{{intf}}_agent", uvm_component parent=null);
+function {{intf}}_cov::new(string name="{{intf}}_cov", uvm_component parent=null);
     super.new(name, parent);
+    
+    {{intf}}_cg = new();
 endfunction
 
 /*******************************************************************************
@@ -61,32 +73,9 @@ endfunction
 ** Author      : generator                                                    **
 ** Description : Create                                                       **
 *******************************************************************************/
-function void {{intf}}_agent::build_phase(uvm_phase phase);
-    if (is_active == UVM_ACTIVE) begin
-        drv = {{intf}}_driver::type_id::create("{{intf}}_driver", this);
-        sqr = {{intf}}_sequencer::type_id::create("{{intf}}_sequencer", this);
-        drv.intf_id = this.intf_id;
-    end
-
-    mon = {{intf}}_monitor::type_id::create("{{intf}}_monitor", this);
-    mon.intf_id = this.intf_id;
-    
-    cov = {{intf}}_cov::type_id::create("{{intf}}_cov", this);
-endfunction
-
-/*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
-*******************************************************************************/
-function void {{intf}}_agent::connect_phase(uvm_phase phase);
-    super.connect_phase(phase);
-
-    if (is_active == UVM_ACTIVE) begin
-        drv.seq_item_port.connect(sqr.seq_item_export);
-    end
-    
-    mon.ap.connect(cov.analysis_export);
+function void {{intf}}_cov::write({{intf}}_xaction t);
+    tr = t;
+    {{intf}}_cg.sample();
 endfunction
 
 `endif
