@@ -46,8 +46,9 @@ class MyTemplate:
 
 class Generator:
     def __init__(self):
-        self.loader    = FileSystemLoader(os.path.join(sys.path[0], "templates"))
+        self.loader    = FileSystemLoader(os.path.join(sys.path[0]))
         self.env       = Environment(loader=self.loader, trim_blocks=True)
+        self.hexist    = 0
         self.templates = {}
         self.GetAllTemplates()
         self.originNames = ['Makefile', 'testbench.sv', 'module_inst.sv']
@@ -61,8 +62,11 @@ class Generator:
             templatePath = os.path.join(sys.path[0], "templates", subdir)
             subfiles = [i for i in os.listdir(templatePath) if os.path.isfile(os.path.join(templatePath, i))]
             for subfile in subfiles:
-                template = MyTemplate(subfile, self.env.get_template(os.path.join(subdir, subfile)))
+                template = MyTemplate(subfile, self.env.get_template(os.path.join("templates", subdir, subfile)))
                 self.templates[subdir].append(template)
+        if (os.path.exists(os.path.join(sys.path[0], "fhead"))):
+            self.hexist = 1
+            self.fhead = self.env.get_template("fhead")
         pass
 
     def Generate(self, opt):
@@ -82,12 +86,15 @@ class Generator:
     def GenerateAgents(self):
         for intf in self.cfg["agent"].keys():
             for template in self.templates['agent']:
+                filename = "{0}_{1}".format(intf, template.name)
+                fhead = ""
+                if self.hexist:
+                    fhead = self.fhead.render(fname=filename, time=self.time)
                 dest_path = os.path.join(self.dst, "agent", intf)
                 if (not os.path.exists(dest_path)):
                     os.makedirs(dest_path)
-                filename = "{0}_{1}".format(intf, template.name)
                 fo = open(os.path.join(dest_path, filename), "w")
-                fo.write(template.template.render(intf=intf, cfg=self.cfg, time=self.time))
+                fo.write(template.template.render(intf=intf, fhead=fhead, cfg=self.cfg, time=self.time))
                 fo.close()
         pass
 
@@ -97,10 +104,13 @@ class Generator:
             os.makedirs(dest_path)
         for template in self.templates[subdir]:
             filename = "{0}_{1}_{2}".format(self.cfg["proj"], self.cfg["module"], template.name)
+            fhead = ""
             if (template.name in self.originNames):
                 filename = template.name
+            if self.hexist:
+                fhead = self.fhead.render(fname=filename, time=self.time)
             fo = open(os.path.join(dest_path, filename), "w")
-            fo.write(template.template.render(cfg=self.cfg, time=self.time))
+            fo.write(template.template.render(cfg=self.cfg, fhead=fhead, time=self.time))
             fo.close()
         pass
 
