@@ -78,13 +78,17 @@ class Configuration:
         self.header = ""
         self.time = time.strftime("%Y-%m-%d %H:%M:%S")
         self.parameter = OrderedDict()
+        self.files = []
+        self.filelists = []
 
     def ParseConfiguration(self, cfg):
         if 'clk' in cfg.keys():self.clk = cfg['clk']
         if 'proj' in cfg.keys():self.proj = cfg['proj']
+        if 'files' in cfg.keys():self.files = cfg['files']
         if 'module' in cfg.keys():self.module = cfg['module']
         if 'timescale' in cfg.keys():self.timescale = cfg['timescale']
         if 'parameter' in cfg.keys():self.parameter = cfg['parameter']
+        if 'filelists' in cfg.keys():self.filelists = cfg['filelists']
         if 'agents' in cfg.keys():
             for agentName in cfg['agents'].keys():
                 agent = Agent(agentName)
@@ -105,7 +109,7 @@ class Generator:
         self.GetAllTemplates()
         self.outputPath = os.getcwd()
         self.config = Configuration()
-        self.keepNames = ['harness.sv', 'Makefile', 'module_inst.sv', 'tc.list']
+        self.keepNames = ['harness.sv', 'Makefile', 'module_inst.sv', 'tc.list', 'tb.f']
 
     def GetAllTemplates(self):
         tempPath = os.path.join(sys.path[0], "templates")

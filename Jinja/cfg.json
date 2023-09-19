@@ -5,6 +5,8 @@
     "parameter":{
         "MAX_DATA_WIDTH":32
     },
+    "filelists":["/home/zhuhw/Scripts/genenv/common/common_flist.f"],
+    "files":["../../design/rtl/sl_l1_top.v"],
     "agents":{
         "sdb":{
             "fields"    : {"up_dn_vld":14, "up_parity":1, "up_ecc":12, "up_data":1024},
