@@ -23,9 +23,9 @@
 **                                                                            **
 ********************************************************************************
 ** Author       : generator                                                   **
-** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                      **
-** Last modified: {{time}}                                         **
-** Filename     : {{"%-60s"|format(fname)}}**
+** Email        : zhwren0211@whu.edu.cn                                       **
+** Last modified: {{"%-60s"|format(time)}}**
+** Filename     : {{"%-60s"|format(filename)}}**
 ** Phone Number :                                                             **
 ** Discription  :                                                             **
 *******************************************************************************/

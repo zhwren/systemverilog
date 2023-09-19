@@ -1,31 +1,30 @@
-{{fhead}}
+{{cfg.header}}
 
-`ifndef __{{intf|upper}}_SEQUENCE_SV__
-`define __{{intf|upper}}_SEQUENCE_SV__
+`ifndef __{{agent.name|upper}}_SEQUENCE_SV__
+`define __{{agent.name|upper}}_SEQUENCE_SV__
 
-class {{intf}}_sequence extends uvm_sequence #({{intf}}_xaction);
-    `uvm_object_utils_begin({{intf}}_sequence)
-    `uvm_object_utils_end
+class {{agent.name}}_sequence extends uvm_sequence #({{agent.name}}_xaction);
+    `uvm_object_utils({{agent.name}}_sequence)
 
-    extern function new(string name="{{intf}}_sequence");
+    extern function new(string name="{{agent.name}}_sequence");
     extern virtual task body();
 endclass
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-function {{intf}}_sequence::new(string name="{{intf}}_sequence");
+function {{agent.name}}_sequence::new(string name="{{agent.name}}_sequence");
     super.new(name);
 endfunction
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-task {{intf}}_sequence::body();
+task {{agent.name}}_sequence::body();
 endtask
 
 `endif

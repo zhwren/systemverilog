@@ -1,21 +1,20 @@
-{{fhead}}
+{{cfg.header}}
 
-`ifndef __{{intf|upper}}_SEQUENCER_SV__
-`define __{{intf|upper}}_SEQUENCER_SV__
+`ifndef __{{agent.name|upper}}_SEQUENCER_SV__
+`define __{{agent.name|upper}}_SEQUENCER_SV__
 
-class {{intf}}_sequencer extends uvm_sequencer #({{intf}}_xaction);
-    `uvm_component_utils_begin({{intf}}_sequencer)
-    `uvm_component_utils_end
+class {{agent.name}}_sequencer extends uvm_sequencer #({{agent.name}}_xaction);
+    `uvm_component_utils({{agent.name}}_sequencer)
 
-    extern function new(string name="{{intf}}_sequencer", uvm_component parent=null);
+    extern function new(string name="{{agent.name}}_sequencer", uvm_component parent=null);
 endclass
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-function {{intf}}_sequencer::new(string name="{{intf}}_sequencer", uvm_component parent=null);
+function {{agent.name}}_sequencer::new(string name="{{agent.name}}_sequencer", uvm_component parent=null);
     super.new(name, parent);
 endfunction
 

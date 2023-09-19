@@ -1,81 +1,86 @@
-{{fhead}}
+{{cfg.header}}
 
-`ifndef __{{intf|upper}}_MONITOR_SV__
-`define __{{intf|upper}}_MONITOR_SV__
+`ifndef __{{agent.name|upper}}_MONITOR_SV__
+`define __{{agent.name|upper}}_MONITOR_SV__
 
-class {{intf}}_monitor extends uvm_monitor;
-    int intf_id;
-    virtual {{intf}}_intf bus;
-    uvm_analysis_port#({{intf}}_xaction) ap;
+class {{agent.name}}_monitor extends uvm_monitor;
+    int inst_id;
+    virtual {{agent.name}}_intf bus;
+    uvm_analysis_port #({{agent.name}}_xaction) ap;
 
-    `uvm_component_utils_begin({{intf}}_monitor)
-    `uvm_component_utils_end
+    `uvm_component_utils({{agent.name}}_monitor)
 
-    extern function new(string name="{{intf}}_monitor", uvm_component parent=null);
+    extern function new(string name="{{agent.name}}_monitor", uvm_component parent=null);
     extern function void build_phase(uvm_phase phase);
     extern function void connect_phase(uvm_phase phase);
     extern task run_phase(uvm_phase phase);
+    extern task collect_one_package();
 endclass
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-function {{intf}}_monitor::new(string name="{{intf}}_monitor", uvm_component parent=null);
+function {{agent.name}}_monitor::new(string name="{{agent.name}}_monitor", uvm_component parent=null);
     super.new(name, parent);
 endfunction
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-function void {{intf}}_monitor::build_phase(uvm_phase phase);
-    ap = new("ap", this);
+function void {{agent.name}}_driver::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    connector#({{agent.name}}_xaction)::regist_output_port($sformatf("{{agent.name}}_intf_%0d", inst_id), ap);
 endfunction
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-function void {{intf}}_monitor::connect_phase(uvm_phase phase);
-    super.connect_phase(phase);
-
-    if (!uvm_config_db#(virtual {{intf}}_intf)::get(this, "", $sformatf("{{intf}}_intf_%0d", intf_id), bus)) begin
-        `uvm_fatal(get_name(), $sformatf("{{intf}}_intf_%0d is null", intf_id));
+function void {{agent.name}}_monitor::connect_phase(uvm_phase phase);
+    if (!uvm_config_db#({{agent.name}}_intf)::get(this, "", "{{agent.name}}_intf", bus)) begin
+        `uvm_fatal(get_name(), $sformatf("{{agent.name}}_intf_%0d is null!", inst_id))
     end
 endfunction
 
 /*******************************************************************************
-** Time        : {{time}}                                          **
-** Author      : generator                                                    **
-** Description : Create                                                       **
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
 *******************************************************************************/
-task {{intf}}_monitor::run_phase(uvm_phase phase);
-    {{intf}}_xaction tr;
-
+task {{agent.name}}_monitor::run_phase(uvm_phase phase);
     forever begin
-        @bus.mon_cb;
-        tr = new();
-
-{% for field in cfg.agent[intf]["field"] %}
-{% if field in cfg.agent[intf]["vld"] %}
-        tr.{{"%-15s"|format(field)}} = bus.mon_cb.{{field}};
-{% endif %}
-{% endfor %}
-
-        fork begin
-            repeat ({{intf}}_dec::VLD2DATA_DLY) @bus.mon_cb;
-{% for field in cfg.agent[intf]["field"] %}
-{% if not (field in cfg.agent[intf]["vld"]) %}
-            tr.{{"%-15s"|format(field)}} = bus.mon_cb.{{field}};
-{% endif %}
-{% endfor %}
-            ap.write(tr);
-        end join_none
+        @(bus.mon_cb);
+        collect_one_package();
     end
+endtask
+
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
+task {{agent.name}}_monitor::collect_one_package();
+    bit sample_en = 1;
+    {{agent.name}}_xaction tr = new();
+
+{% for vld in agent.valids %}
+    tr.{{"%-15s"|format(vld)}} = bus.mon_cb.{{vld}};
+    sample_en         &= (tr.{{vld}} != 0);
+{% endfor %}
+    fork begin
+        repeat ({{agent.name}}_dec::VLD2DATA_DELAY) @(bus.drv_cb);
+{% for field in agent.fields %}
+{% if not field.name in agent.valids %}
+        tr.{{"%-15s"|format(field.name)}} = bus.mon_cb.{{field.name}};
+{% endif %}
+{% endfor %}
+        if (sample_en) ap.write(tr);
+    end join_none
 endtask
 
 `endif

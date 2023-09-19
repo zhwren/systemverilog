@@ -7,8 +7,7 @@ class {{cfg.proj}}_{{cfg.module}}_tc_base extends uvm_test;
     uvm_report_server svr;
     {{cfg.proj}}_{{cfg.module}}_env env;
 
-    `uvm_component_utils_begin({{cfg.proj}}_{{cfg.module}}_tc_base)
-    `uvm_component_utils_end
+    `uvm_component_utils({{cfg.proj}}_{{cfg.module}}_tc_base)
 
     extern function new(string name="tc_base", uvm_component parent=null);
     extern function void build_phase(uvm_phase phase);
@@ -22,10 +21,20 @@ class {{cfg.proj}}_{{cfg.module}}_tc_base extends uvm_test;
     extern task gen_reset();
 endclass
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 function {{cfg.proj}}_{{cfg.module}}_tc_base::new(string name="tc_base", uvm_component parent=null);
     super.new(name, parent);
 endfunction
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_tc_base::build_phase(uvm_phase phase);
     super.build_phase(phase);
 
@@ -34,56 +43,82 @@ function void {{cfg.proj}}_{{cfg.module}}_tc_base::build_phase(uvm_phase phase);
     env = {{cfg.proj}}_{{cfg.module}}_env::type_id::create("env", this);
 endfunction
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::run_phase(uvm_phase phase);
     fork
         gen_clk();
         gen_reset();
-        super.run_phase(phase);
     join
 endtask
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::gen_clk();
     harness.clk = $urandom();
 
     while (1) begin
-        #({{cfg.half_clk}});
+        #({{cfg.clk}});
         harness.clk = ~harness.clk;
     end
 endtask
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::gen_reset();
     harness.before_reset = 1'b1;
     harness.rst_n = $urandom();
 
-    #({{cfg.half_clk}} * $urandom_range(10, 100));
+    #({{cfg.clk}} * $urandom_range(10, 100));
     harness.rst_n = 1'b0;
-    #({{cfg.half_clk}} * $urandom_range(10, 100));
+    #({{cfg.clk}} * $urandom_range(10, 100));
     harness.rst_n = 1'b1;
     harness.before_reset = 1'b0;
 endtask
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::reset_phase(uvm_phase phase);
-    fork
-        super.reset_phase(phase);
-    join_none
-
     phase.raise_objection(this);
     wait (harness.before_reset = 1'b0);
     phase.drop_objection(this);
 endtask
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::main_phase(uvm_phase phase);
-    fork
-        super.main_phase(phase);
-    join_none
-
     phase.phase_done.set_drain_time(this, 100);
 endtask
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_tc_base::report_phase(uvm_phase phase);
     pre_abort();
 endfunction
 
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_tc_base::pre_abort();
     if (svr.get_severity_count(UVM_FATAL) + svr.get_severity_count(UVM_ERROR)) begin
         `uvm_info(get_name(), "\nTestCase: Failed!", UVM_NONE);

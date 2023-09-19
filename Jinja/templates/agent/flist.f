@@ -1,2 +1,2 @@
 +incdir+.
-{{intf}}_pkg.sv
+{{agent.name}}_pkg.sv

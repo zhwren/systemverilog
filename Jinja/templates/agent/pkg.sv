@@ -1,22 +1,24 @@
-{{fhead}}
+{{cfg.header}}
 
-`ifndef __{{intf|upper}}_PKG_SV__
-`define __{{intf|upper}}_PKG_SV__
+`ifndef __{{agent.name|upper}}_PKG_SV__
+`define __{{agent.name|upper}}_PKG_SV__
 
-`include "{{intf}}_dec.sv"
-`include "{{intf}}_interface.sv"
+`include "{{agent.name}}_dec.sv"
+`include "{{agent.name}}_interface.sv"
 
-package {{intf}}_pkg;
+package {{agent.name}}_pkg;
     import uvm_pkg::*;
-    `include "{{intf}}_plus.sv"
-    `include "{{intf}}_xaction.sv"
-    `include "{{intf}}_sequence.sv"
-    `include "{{intf}}_sequencer.sv"
-    `include "{{intf}}_monitor.sv"
-    `include "{{intf}}_driver.sv"
-    `include "{{intf}}_cov.sv"
-    `include "{{intf}}_agent.sv"
+    import common_pkg::*;
+
+    `include "{{agent.name}}_plus.sv"
+    `include "{{agent.name}}_xaction.sv"
+    `include "{{agent.name}}_sequence.sv"
+    `include "{{agent.name}}_sequencer.sv"
+    `include "{{agent.name}}_monitor.sv"
+    `include "{{agent.name}}_driver.sv"
+    `include "{{agent.name}}_cov.sv"
+    `include "{{agent.name}}_agent.sv"
 endpackage
-import {{intf}}_pkg::*;
+import {{agent.name}}_pkg::*;
 
 `endif

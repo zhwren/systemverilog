@@ -1,23 +1,23 @@
-{{fhead}}
+{{cfg.header}}
 
-`ifndef __{{intf|upper}}_INTF_SV__
-`define __{{intf|upper}}_INTF_SV__
+`ifndef __{{agent.name|upper}}_INTF_SV__
+`define __{{agent.name|upper}}_INTF_SV__
 
-interface {{intf}}_intf(input clk, input rst_n);
+interface {{agent.name}}_intf(input clk, input rst_n);
 
-{% for field in cfg.agent[intf]["field"] %}
-    logic [{{intf}}_dec::{{"%-20s"|format([field,"_WIDTH"]|join|upper)}}-1:0] {{field}};
+{% for field in agent.fields %}
+    logic [{{agent.name}}_dec::{{"%-20s"|format(field.name|upper + "_WIDTH")}}-1:0] {{field.name}};
 {% endfor %}
 
     clocking drv_cb @(posedge clk);
-{% for field in cfg.agent[intf]["field"] %}
-        inout {{field}};
+{% for field in agent.fields %}
+        output {{field.name}};
 {% endfor %}
     endclocking
 
     clocking mon_cb @(posedge clk);
-{% for field in cfg.agent[intf]["field"] %}
-        input {{field}};
+{% for field in agent.fields %}
+        input {{field.name}};
 {% endfor %}
     endclocking
 

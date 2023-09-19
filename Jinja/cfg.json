@@ -1,14 +1,22 @@
 {
-    "proj"  :"nxx",
-    "module":"mxx",
-
-    "agent":{
+    "proj"  :"sl",
+    "module":"l1",
+    "clk":"100ps",
+    "parameter":{
+        "MAX_DATA_WIDTH":32
+    },
+    "agents":{
         "sdb":{
-            "field"     : ["up_dn_vld", "up_ecc", "up_data"],
-            "width"     : [14,          1,        1024     ],
-            "vld"       : ["up_dn_vld"],
-            "inst_num"  : 1,
+            "fields"    : {"up_dn_vld":14, "up_parity":1, "up_ecc":12, "up_data":1024},
+            "valids"    : ["up_dn_vld"],
+            "inst_num"  : 7,
             "inst_type" : "master"
+        },
+        "ixb1_sel":{
+            "fields":{"s1_vld":1, "s1_sel":1, "s1_mux":2},
+            "valids":["s1_vld"],
+            "inst_num":7,
+            "inst_type":"master"
         }
     }
 }

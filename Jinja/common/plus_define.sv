@@ -36,7 +36,7 @@
     class plus_``_name extends uvm_object;\
         static string plus_name = "``_name";
 
-`define PLUS_DECLATE_END(_name) \
+`define PLUS_DECLARE_END(_name) \
     endclass:plus_``_name \
     bit rst_``name = plus_``_name::parse_variables();
 
