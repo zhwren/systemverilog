@@ -5,7 +5,7 @@
 
 package {{agent.name}}_dec;
 
-    parameter {{"%-20s"|format("VLD2DATA_DELAY")}} = 0;
+    parameter {{"%-20s"|format("VLD2DATA_DELAY")}} = {{agent.vld2data_dly}};
 {% for field in agent.fields %}
     parameter {{"%-20s"|format(field.name|upper + "_WIDTH")}} = {{field.width}};
 {% endfor %}

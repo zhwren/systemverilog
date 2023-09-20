@@ -8,7 +8,10 @@ class {{cfg.proj}}_{{cfg.module}}_env extends uvm_env;
 {% for agent in cfg.agents %}
     {{"%-20s"|format([agent.name,"_agent"]|join)}} {{agent.name}}_agt[{{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM];
 {% endfor %}
-    {{cfg.proj}}_{{cfg.module}}_model model;
+{% for agent in cfg.internal_agents %}
+    {{"%-20s"|format([cfg.proj, agent.name,"env"]|join("_"))}} sub_{{agent.name}}_env[{{cfg.proj}}_{{cfg.module}}_dec::SUB_{{agent.name|upper}}_NUM];
+{% endfor %}
+    {{"%-20s"|format([cfg.proj,cfg.module,"model"]|join("_"))}} model;
 
     `uvm_component_utils({{cfg.proj}}_{{cfg.module}}_env)
 

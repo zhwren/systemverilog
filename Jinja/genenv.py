@@ -59,11 +59,13 @@ class Agent:
         self.valids = []
         self.inst_num = 1
         self.inst_type = "master"
+        self.vld2data_dly = 0
 
     def ParseConfiguration(self, cfg):
         if 'inst_num' in cfg.keys():self.inst_num = cfg['inst_num']
         if 'inst_type' in cfg.keys():self.inst_type = cfg['inst_type']
         if 'valids' in cfg.keys():self.valids = cfg['valids']
+        if 'vld2data_dly' in cfg.keys():self.vld2data_dly = cfg['vld2data_dly']
         if 'fields' in cfg.keys():
             for fieldName in cfg['fields'].keys():
                 self.fields.append(Field(fieldName, cfg['fields'][fieldName]))
@@ -80,6 +82,7 @@ class Configuration:
         self.parameter = OrderedDict()
         self.files = []
         self.filelists = []
+        self.internal_agents = []
 
     def ParseConfiguration(self, cfg):
         if 'clk' in cfg.keys():self.clk = cfg['clk']
@@ -94,6 +97,11 @@ class Configuration:
                 agent = Agent(agentName)
                 agent.ParseConfiguration(cfg['agents'][agentName])
                 self.agents.append(agent)
+        if 'internal_agents' in cfg.keys():
+            for agentName in cfg['internal_agents'].keys():
+                agent = Agent(agentName)
+                agent.ParseConfiguration(cfg['internal_agents'][agentName])
+                self.internal_agents.append(agent)
 
 #*******************************************************************************
 #* Time        : 2023-09-19 09:38:39                                           *
