@@ -31,7 +31,7 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 function void {{agent.name}}_driver::connect_phase(uvm_phase phase);
-    if (!uvm_config_db#({{agent.name}}_intf)::get(this, "", $sformatf("{{agent.name}}_intf_%0d", inst_id), bus)) begin
+    if (!uvm_config_db#(virtual {{agent.name}}_intf)::get(this, "", "{{agent.name}}_intf", bus)) begin
         `uvm_fatal(get_name(), $sformatf("{{agent.name}}_intf_%0d is null!", inst_id))
     end
 endfunction

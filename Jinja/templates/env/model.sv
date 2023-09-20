@@ -86,7 +86,7 @@ task {{cfg.proj}}_{{cfg.module}}_model::{{agent.name}}_input_process(int intf_id
     tr.set_sequencer({{agent.name}}_sqr[intf_id]);
 
     repeat (100) begin
-        item.randomize();
+        tr.randomize();
         {{agent.name}}_seq[intf_id].start_item(tr);
         {{agent.name}}_seq[intf_id].finish_item(tr);
     end

@@ -12,6 +12,7 @@ class {{cfg.proj}}_{{cfg.module}}_env extends uvm_env;
     {{"%-20s"|format([cfg.proj, agent.name,"env"]|join("_"))}} sub_{{agent.name}}_env[{{cfg.proj}}_{{cfg.module}}_dec::SUB_{{agent.name|upper}}_NUM];
 {% endfor %}
     {{"%-20s"|format([cfg.proj,cfg.module,"model"]|join("_"))}} model;
+    {{"%-20s"|format([cfg.proj,cfg.module,"e2e"]|join("_"))}} e2e;
 
     `uvm_component_utils({{cfg.proj}}_{{cfg.module}}_env)
 
@@ -36,6 +37,7 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_env::build_phase(uvm_phase phase);
+    e2e = {{cfg.proj}}_{{cfg.module}}_e2e::type_id::create("e2e", this);
     model = {{cfg.proj}}_{{cfg.module}}_model::type_id::create("model", this);
     if (!uvm_config_db#(virtual {{cfg.proj}}_{{cfg.module}}_intf)::get(this, "", "top_vif", top_vif)) begin
         `uvm_fatal(get_name(), $sformatf("{{cfg.proj}}_{{cfg.module}}_top_vif is null!"));
@@ -44,13 +46,13 @@ function void {{cfg.proj}}_{{cfg.module}}_env::build_phase(uvm_phase phase);
 
     foreach ({{agent.name}}_agt[i]) begin
         {{agent.name}}_agt[i] = {{agent.name}}_agent::type_id::create($sformatf("{{agent.name}}_%0d", i), this);
-        {{agent.name}}_agt[i].intf_id = i;
+        {{agent.name}}_agt[i].inst_id = i;
 {% if agent.inst_type == "master" %}
         {{agent.name}}_agt[i].is_active = UVM_ACTIVE;
 {% else %}
         {{agent.name}}_agt[i].is_active = UVM_PASSIVE;
 {% endif %}
-        uvm_config_db#(virtual {{agent.name}}_intf)::set(this, $sormatf("{{agent.name}}_%0d.*", i), "{{agent.name}}_intf", top_vif.{{agent.name}}_vif[i]);
+        uvm_config_db#(virtual {{agent.name}}_intf)::set(this, $sformatf("{{agent.name}}_%0d.*", i), "{{agent.name}}_intf", top_vif.{{agent.name}}_vif[i]);
     end
 {% endfor %}
 endfunction

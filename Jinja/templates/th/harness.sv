@@ -11,13 +11,15 @@ import uvm_pkg::*;
 module harness;
     logic clk;
     logic rst_n;
+    logic before_reset;
 
     virtual {{cfg.proj}}_{{cfg.module}}_intf top_vif;
     {{cfg.proj}}_{{cfg.module}}_intf         top_if(clk, rst_n);
 
-    `include "../tb/module_inst.sv"
+    `include "../th/module_inst.sv"
 
     initial begin
+        top_vif = top_if;
         uvm_config_db#(virtual {{cfg.proj}}_{{cfg.module}}_intf)::set(null, "*env", "top_vif", top_vif);
         `ifdef DUMP_FSDB
             $fsdbDumpfile("t.fsdb");

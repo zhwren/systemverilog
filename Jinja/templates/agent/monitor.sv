@@ -31,7 +31,7 @@ endfunction
 ** Author      : generator                                                     *
 ** Description : Create                                                        *
 *******************************************************************************/
-function void {{agent.name}}_driver::build_phase(uvm_phase phase);
+function void {{agent.name}}_monitor::build_phase(uvm_phase phase);
     super.build_phase(phase);
     connector#({{agent.name}}_xaction)::regist_output_port($sformatf("{{agent.name}}_intf_%0d", inst_id), ap);
 endfunction
@@ -42,7 +42,7 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 function void {{agent.name}}_monitor::connect_phase(uvm_phase phase);
-    if (!uvm_config_db#({{agent.name}}_intf)::get(this, "", "{{agent.name}}_intf", bus)) begin
+    if (!uvm_config_db#(virtual {{agent.name}}_intf)::get(this, "", "{{agent.name}}_intf", bus)) begin
         `uvm_fatal(get_name(), $sformatf("{{agent.name}}_intf_%0d is null!", inst_id))
     end
 endfunction

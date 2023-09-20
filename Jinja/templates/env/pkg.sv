@@ -12,6 +12,7 @@ package {{cfg.proj}}_{{cfg.module}}_pkg;
 {% for agent in cfg.agents %}
     import {{agent.name}}_pkg::*;
 {% endfor %}
+    `include "{{cfg.proj}}_{{cfg.module}}_plus.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_model.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_e2e.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_env.sv"

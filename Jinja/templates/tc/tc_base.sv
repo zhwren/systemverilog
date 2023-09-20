@@ -92,7 +92,7 @@ endtask
 *******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_tc_base::reset_phase(uvm_phase phase);
     phase.raise_objection(this);
-    wait (harness.before_reset = 1'b0);
+    wait (harness.before_reset == 1'b0);
     phase.drop_objection(this);
 endtask
 

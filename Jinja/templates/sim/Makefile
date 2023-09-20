@@ -8,7 +8,7 @@ OPTS += +define+DUMP_FSDB -debug_access+all
 
 ${target} :
 	vcs -full64 -sverilog -cm line+cond+fsm -${UVM_HOME}/src/dpi/uvm_dpi.cc \
-		-CFLAGS -DVCS -ntb_opts uvm -fsdb +incdir+${UVM_HOME}/src \
+		-CFLAGS -DVCS -ntb_opts uvm +incdir+${UVM_HOME}/src \
 		${UVM_HOME}/src/uvm_pkg.sv -f ../cfg/tb.f ${OPTS}
 
 clean :
