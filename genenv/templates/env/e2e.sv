@@ -4,6 +4,7 @@
 `define __{{cfg.proj|upper}}_{{cfg.module|upper}}_E2E_SV__
 
 class {{cfg.proj}}_{{cfg.module}}_e2e extends uvm_component;
+    int inst_id;
 {% for agent in cfg.agents %}
     uvm_blocking_get_export #({{agent.name}}_xaction) {{agent.name}}_agt2chk_port[{{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM];
 {% endfor %}
@@ -34,9 +35,11 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_e2e::build_phase(uvm_phase phase);
+    int id;
 {% for agent in cfg.agents %}
     foreach ({{agent.name}}_agt2chk_port[i]) begin
-        connector#({{agent.name}}_xaction)::regist_input_port($sformatf("{{agent.name}}_intf_%0d", i), "rm", {{agent.name}}_agt2chk_port[i]);
+        id = inst_id * {{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM + i;
+        connector#({{agent.name}}_xaction)::regist_input_port($sformatf("{{agent.name}}_intf_%0d", id), {{agent.name}}_agt2chk_port[i]);
     end
 
 {% endfor %}
@@ -71,7 +74,7 @@ task {{cfg.proj}}_{{cfg.module}}_e2e::{{agent.name}}_agt2chk_process(int intf_id
 
     forever begin
         {{agent.name}}_agt2chk_port[intf_id].get(tr);
-        tr.print();
+        `uvm_info(get_name(), $sformatf("\n%s", tr.sprint()), UVM_LOW);
     end
 endtask
 

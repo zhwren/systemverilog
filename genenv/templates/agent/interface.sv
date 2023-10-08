@@ -6,12 +6,12 @@
 interface {{agent.name}}_intf(input clk, input rst_n);
 
 {% for field in agent.fields %}
-    logic [{{agent.name}}_dec::{{"%-20s"|format(field.name|upper + "_WIDTH")}}-1:0] {{field.name}};
+    wire [{{agent.name}}_dec::{{"%-20s"|format(field.name|upper + "_WIDTH")}}-1:0] {{field.name}};
 {% endfor %}
 
     clocking drv_cb @(posedge clk);
 {% for field in agent.fields %}
-        output {{field.name}};
+        inout {{field.name}};
 {% endfor %}
     endclocking
 
