@@ -12,7 +12,7 @@ class {{cfg.proj}}_{{cfg.module}}_env extends uvm_env;
     {{"%-20s"|format([agent.name,"_agent"]|join)}} {{agent.name}}_agt[{{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM];
 {% endfor %}
 {% for agent in cfg.internal_agents %}
-    {{"%-20s"|format([cfg.proj, agent.name,"env"]|join("_"))}} {{cfg.proj}}_{{agent.name}}_sub_env[{{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM];
+    {{"%-20s"|format([cfg.proj, agent.name,"env"]|join("_"))}} sub_{{cfg.proj}}_{{agent.name}}_env[{{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM];
 {% endfor %}
     {{"%-20s"|format([cfg.proj,cfg.module,"model"]|join("_"))}} model;
     {{"%-20s"|format([cfg.proj,cfg.module,"e2e"]|join("_"))}} e2e;
@@ -70,11 +70,11 @@ function void {{cfg.proj}}_{{cfg.module}}_env::build_phase(uvm_phase phase);
 {% endfor %}
 {% for agent in cfg.internal_agents %}
 
-    foreach ({{cfg.proj}}_{{agent.name}}_sub_env[i]) begin
+    foreach (sub_{{cfg.proj}}_{{agent.name}}_env[i]) begin
         id = inst_id * {{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM + i;
-        {{cfg.proj}}_{{agent.name}}_sub_env[i] = {{cfg.proj}}_{{agent.name}}_env::type_id::create($sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", id), this);
-        {{cfg.proj}}_{{agent.name}}_sub_env[i].inst_id = id;
-        {{cfg.proj}}_{{agent.name}}_sub_env[i].is_active = UVM_PASSIVE;
+        sub_{{cfg.proj}}_{{agent.name}}_env[i] = {{cfg.proj}}_{{agent.name}}_env::type_id::create($sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", id), this);
+        sub_{{cfg.proj}}_{{agent.name}}_env[i].inst_id = id;
+        sub_{{cfg.proj}}_{{agent.name}}_env[i].is_active = UVM_PASSIVE;
         uvm_config_db#(virtual {{cfg.proj}}_{{agent.name}}_intf)::set(this, $sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", id), "top_vif", top_vif.{{cfg.proj}}_{{agent.name}}_env_vif[i]);
     end
 {% endfor %}

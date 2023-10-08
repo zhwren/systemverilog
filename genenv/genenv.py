@@ -83,6 +83,7 @@ class Configuration:
         self.files = []
         self.filelists = []
         self.internal_agents = []
+        self.subenv_path = "bt"
 
     def ParseConfiguration(self, cfg):
         if 'clk' in cfg.keys():self.clk = cfg['clk']
@@ -92,15 +93,16 @@ class Configuration:
         if 'timescale' in cfg.keys():self.timescale = cfg['timescale']
         if 'parameter' in cfg.keys():self.parameter = cfg['parameter']
         if 'filelists' in cfg.keys():self.filelists = cfg['filelists']
+        if 'subenv_path' in cfg.keys():self.subenv_path = cfg['subenv_path']
         if 'agents' in cfg.keys():
             for agentName in cfg['agents'].keys():
                 agent = Agent(agentName)
                 agent.ParseConfiguration(cfg['agents'][agentName])
                 self.agents.append(agent)
-        if 'internal_agents' in cfg.keys():
-            for agentName in cfg['internal_agents'].keys():
+        if 'subenvs' in cfg.keys():
+            for agentName in cfg['subenvs'].keys():
                 agent = Agent(agentName)
-                agent.ParseConfiguration(cfg['internal_agents'][agentName])
+                agent.ParseConfiguration(cfg['subenvs'][agentName])
                 self.internal_agents.append(agent)
 
 #*******************************************************************************

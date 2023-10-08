@@ -1,33 +1,30 @@
 {
-    "proj"  :"sl",
-    "module":"l1",
-    "clk":"100ps",
-    "parameter":{
-        "MAX_DATA_WIDTH":32
+    "proj"      : "sl",
+    "module"    : "l1",
+    "clk"       : "100ps",
+    "parameter" : {
+        "MAX_DATA_WIDTH" : 32
     },
-    "filelists":["/home/zhuhw/Scripts/genenv/common/common_flist.f"],
-    "files":["../../design/rtl/sl_l1_top.v"],
-    "agents":{
-        "sdb":{
-            "fields"    : {"up_dn_vld":14, "up_parity":1, "up_ecc":12, "up_data":1024},
-            "valids"    : ["up_dn_vld"],
+    "filelists" : ["/home/zhuhw/Scripts/genenv/common/common_flist.f"],
+    "files"     : ["../../design/rtl/sl_l1_top.v"],
+    "agents"    : {
+        "sdb" : {
+            "fields"       : {"up_dn_vld":14, "up_parity":1, "up_ecc":12, "up_data":1024},
+            "valids"       : ["up_dn_vld"],
+            "inst_num"     : 7,
+            "inst_type"    : "master",
+            "vld2data_dly" : 1
+        },
+        "ixb1_sel" : {
+            "fields"    : {"s1_vld":1, "s1_sel":1, "s1_mux":2},
+            "valids"    : ["s1_vld"],
             "inst_num"  : 7,
-            "inst_type" : "master",
-            "vld2data_dly":1
-        },
-        "ixb1_sel":{
-            "fields":{"s1_vld":1, "s1_sel":1, "s1_mux":2},
-            "valids":["s1_vld"],
-            "inst_num":7,
-            "inst_type":"master"
+            "inst_type" : "master"
         }
     },
-    "internal_agents":{
-        "obm":{
-            "fields":{"addr_valid":1, "addr":16}
-        },
-        "org":{
-            "fields":{"rd_en":1, "rd_addr":16, "wr_vld":1, "wr_addr":16, "wr_data":1024}
-        }
-    }
+    "subenvs" : {
+        "obm" : {"inst_num":7},
+        "org" : {"inst_num":7}
+    },
+    "subenv_path" : "../../bt"
 }
