@@ -34,7 +34,7 @@
 
 `define PLUS_DECLARE_BEGIN(_name) \
     class plus_``_name extends uvm_object;\
-        static string plus_name = "``_name";
+        static string plus_name = `"_name";
 
 `define PLUS_DECLARE_END(_name) \
     endclass:plus_``_name \
@@ -43,40 +43,38 @@
 `define PLUS_VARIABLE_DEFINE(_type, _variable) static _type _variable;
 `define PLUS_PARSE_BEGIN \
     static function bit parse_variables();\
-        string para, temp; \
-        int vmin, vmax, idx;
+        string para, temp, plusargs[$]; \
+        int vmin, vmax, idx;\
+        uvm_cmdline_processor::get_inst().get_plusargs(plusargs);
 
 `define PLUS_PARSE_END endfunction
 
+`define PARSE_DIGITAL(_variable_s, _variable)\
+    foreach (plusargs[j]) begin\
+        if ($sscanf(plusargs[j], $sformatf("+%s=%s", _variable_s, "[%d:%d]"), vmin, vmax)) begin\
+            _variable = $urandom_range(vmin, vmax);\
+        end else if ($sscanf(plusargs[j], $sformatf("+%s=%s", _variable_s, "[%h:%h]"), vmin, vmax)) begin\
+            _variable = $urandom_range(vmin, vmax);\
+        end else if ($sscanf(plusargs[j], $sformatf("+%s=%s", _variable_s, "%d"), idx)) begin\
+            _variable = idx;\
+        end else if ($sscanf(plusargs[j], $sformatf("+%s=%s", _variable_s, "%h"), idx)) begin\
+            _variable = idx;\
+        end\
+    end
+
 `define PLUS_DIGITAL(_variable, _default) \
     _variable = _default;\
-    if ($value$plusargs("``_variable=%s", para)) begin \
-        if ($sscanf(para, "[%d:%d]", vmin, vmax)) begin \
-            _variable = $urandom_range(vmin, vmax); \
-        end else if ($sscanf(para, "%d", _variable)) begin\
-        end\
-    end\
+    `PARSE_DIGITAL("``_variable", _variable)\
     `uvm_info($sformatf("plus_%s", plus_name), $sformatf("``_variable=%0d", _variable), UVM_LOW);
 
 `define PLUS_DIGITAL_1A(_variable, _default) \
-    foreach (_variable[i]) _variable[i] = _default;\
-    if ($value$plusargs("``_variable=%s", para)) begin \
-        if ($sscanf(para, "[%d:%d]", vmin, vmax)) begin \
-            foreach (_variable[i]) _variable[i] = $urandom_range(vmin, vmax); \
-        end else if ($sscanf(para, "%d", idx)) begin \
-            foreach (_variable[i]) _variable[i] = idx; \
-        end\
-    end \
-    foreach (_variable[i]) begin \
-        temp = $sformatf("``_variable[%0d]=%s", i, "%s"); \
-        if ($value$plusargs(temp, para)) begin \
-            if ($sscanf(para, "[%d:%d]", vmin, vmax)) begin \
-                _variable[i] = $urandom_range(vmin, vmax); \
-            end else if ($sscanf(para, "%d", idx)) begin \
-                _variable[i] = idx; \
-            end \
-        end \
-    end \
+    foreach (_variable[i]) begin\
+        _variable[i] = _default;\
+        `PARSE_DIGITAL("``_variable", _variable[i])\
+    end\
+    foreach (_variable[i]) begin\
+        `PARSE_DIGITAL($sformatf("``_variable[%0d]", i), _variable[i])\
+    end\
     foreach (_variable[i]) \
         `uvm_info($sformatf("plus_%s", plus_name), $sformatf("``_variable[%0d]=%0d", i, _variable[i]), UVM_LOW);
 
