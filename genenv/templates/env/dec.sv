@@ -9,7 +9,7 @@ package {{cfg.proj}}_{{cfg.module}}_dec;
     parameter {{"%-20s"|format([agent.name|upper,"NUM"]|join("_"))}} = {{agent.inst_num}};
 {% endfor %}
 
-{% for agent in cfg.internal_agents %}
+{% for agent in cfg.subenvs %}
     parameter {{"%-20s"|format([cfg.proj|upper,agent.name|upper,"ENV_NUM"]|join("_"))}} = {{agent.inst_num}};
 {% endfor %}
 

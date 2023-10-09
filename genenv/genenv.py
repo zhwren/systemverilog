@@ -82,7 +82,7 @@ class Configuration:
         self.parameter = OrderedDict()
         self.files = []
         self.filelists = []
-        self.internal_agents = []
+        self.subenvs = []
         self.subenv_path = "bt"
 
     def ParseConfiguration(self, cfg):
@@ -103,7 +103,7 @@ class Configuration:
             for agentName in cfg['subenvs'].keys():
                 agent = Agent(agentName)
                 agent.ParseConfiguration(cfg['subenvs'][agentName])
-                self.internal_agents.append(agent)
+                self.subenvs.append(agent)
 
 #*******************************************************************************
 #* Time        : 2023-09-19 09:38:39                                           *

@@ -22,4 +22,4 @@ run :
 	make orun
 
 verdi :
-	verdi -nologo +v2k +libext+.v+.vh -sv -ntb_opts uvm-1.2 -f ../cfg/tb.f &
+	verdi -nologo +v2k +libext+.v+.vh -sv -ntb_opts uvm-1.2 ${OPTS} -f ../cfg/tb.f &

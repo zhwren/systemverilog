@@ -13,7 +13,7 @@ package {{cfg.proj}}_{{cfg.module}}_pkg;
     import {{agent.name}}_pkg::*;
 {% endfor %}
 
-{% for agent in cfg.internal_agents %}
+{% for agent in cfg.subenvs %}
     import {{cfg.proj}}_{{agent.name}}_pkg::*;
 {% endfor %}
 

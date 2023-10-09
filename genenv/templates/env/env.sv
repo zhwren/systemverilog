@@ -11,7 +11,7 @@ class {{cfg.proj}}_{{cfg.module}}_env extends uvm_env;
 {% for agent in cfg.agents %}
     {{"%-20s"|format([agent.name,"_agent"]|join)}} {{agent.name}}_agt[{{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM];
 {% endfor %}
-{% for agent in cfg.internal_agents %}
+{% for agent in cfg.subenvs %}
     {{"%-20s"|format([cfg.proj, agent.name,"env"]|join("_"))}} sub_{{cfg.proj}}_{{agent.name}}_env[{{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM];
 {% endfor %}
     {{"%-20s"|format([cfg.proj,cfg.module,"model"]|join("_"))}} model;
@@ -68,7 +68,7 @@ function void {{cfg.proj}}_{{cfg.module}}_env::build_phase(uvm_phase phase);
         uvm_config_db#(virtual {{agent.name}}_intf)::set(this, $sformatf("{{agent.name}}_%0d.*", id), "{{agent.name}}_intf", top_vif.{{agent.name}}_vif[i]);
     end
 {% endfor %}
-{% for agent in cfg.internal_agents %}
+{% for agent in cfg.subenvs %}
 
     foreach (sub_{{cfg.proj}}_{{agent.name}}_env[i]) begin
         id = inst_id * {{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM + i;

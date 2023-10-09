@@ -20,7 +20,7 @@ class {{cfg.proj}}_{{cfg.module}}_model extends uvm_component;
 
 {% for agent in cfg.agents %}
 {% if agent.inst_type == "master" %}
-    extern task {{agent.name}}_input_process(int intf_id);
+    extern task {{agent.name}}_input_process(uvm_phase phase, int intf_id);
 {% endif %}
 {% endfor %}
 endclass
@@ -57,21 +57,19 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 task {{cfg.proj}}_{{cfg.module}}_model::main_phase(uvm_phase phase);
-    phase.raise_objection(this);
     fork
 {% for agent in cfg.agents %}
 {% if agent.inst_type == "master" %}
         for (int i = 0; i < {{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM; i++) begin
             automatic int intf_id = i;
             fork
-                {{agent.name}}_input_process(intf_id);
+                {{agent.name}}_input_process(phase, intf_id);
             join_none
         end
 
 {% endif %}
 {% endfor %}
     join
-    phase.drop_objection(this);
 endtask
 
 {% for agent in cfg.agents %}
@@ -81,15 +79,17 @@ endtask
 ** Author      : generator                                                     *
 ** Description : Create                                                        *
 *******************************************************************************/
-task {{cfg.proj}}_{{cfg.module}}_model::{{agent.name}}_input_process(int intf_id);
+task {{cfg.proj}}_{{cfg.module}}_model::{{agent.name}}_input_process(uvm_phase phase, int intf_id);
     {{agent.name}}_xaction tr = new();
     tr.set_sequencer({{agent.name}}_sqr[intf_id]);
 
+    phase.raise_objection(this);
     repeat (100) begin
         tr.randomize();
         {{agent.name}}_seq[intf_id].start_item(tr);
         {{agent.name}}_seq[intf_id].finish_item(tr);
     end
+    phase.drop_objection(this);
 endtask
 
 {% endif %}
