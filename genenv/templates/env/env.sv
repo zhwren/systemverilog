@@ -4,9 +4,7 @@
 `define __{{cfg.proj|upper}}_{{cfg.module|upper}}_EVN_SV__
 
 class {{cfg.proj}}_{{cfg.module}}_env extends uvm_env;
-    int inst_id;
-    uvm_active_passive_enum is_active;
-    virtual {{cfg.proj}}_{{cfg.module}}_intf top_vif;
+    {{cfg.proj}}_{{cfg.module}}_env_cfg cfg;
 
 {% for agent in cfg.agents %}
     {{"%-20s"|format([agent.name,"_agent"]|join)}} {{agent.name}}_agt[{{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM];
@@ -32,8 +30,6 @@ endclass
 *******************************************************************************/
 function {{cfg.proj}}_{{cfg.module}}_env::new(string name="{{cfg.proj}}_{{cfg.module}}_env", uvm_component parent=null);
     super.new(name, parent);
-    inst_id = 0;
-    is_active = UVM_ACTIVE;
 endfunction
 
 /*******************************************************************************
@@ -42,40 +38,28 @@ endfunction
 ** Description : Create                                                        *
 *******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_env::build_phase(uvm_phase phase);
-    int id;
-
-    e2e = {{cfg.proj}}_{{cfg.module}}_e2e::type_id::create("e2e", this);
-    e2e.inst_id = this.inst_id;
-
-    if (is_active == UVM_ACTIVE) begin
-        model = {{cfg.proj}}_{{cfg.module}}_model::type_id::create("model", this);
+    if (cfg == null) begin
+        `uvm_fatal(get_name(), $sformatf("{{cfg.proj}}_{{cfg.module}}_env_cfg is null!"));
     end
 
-    if (!uvm_config_db#(virtual {{cfg.proj}}_{{cfg.module}}_intf)::get(this, "", "top_vif", top_vif)) begin
-        `uvm_fatal(get_name(), $sformatf("{{cfg.proj}}_{{cfg.module}}_top_vif is null!"));
+    e2e = {{cfg.proj}}_{{cfg.module}}_e2e::type_id::create("e2e", this);
+    e2e.inst_id = cfg.inst_id;
+
+    if (cfg.is_active == UVM_ACTIVE) begin
+        model = {{cfg.proj}}_{{cfg.module}}_model::type_id::create("model", this);
     end
 {% for agent in cfg.agents %}
 
     foreach ({{agent.name}}_agt[i]) begin
-        id = inst_id * {{cfg.proj}}_{{cfg.module}}_dec::{{agent.name|upper}}_NUM + i;
-        {{agent.name}}_agt[i] = {{agent.name}}_agent::type_id::create($sformatf("{{agent.name}}_%0d", id), this);
-        {{agent.name}}_agt[i].inst_id = id;
-{% if agent.inst_type == "master" %}
-        {{agent.name}}_agt[i].is_active = (is_active == UVM_ACTIVE) ? UVM_ACTIVE : UVM_PASSIVE;
-{% else %}
-        {{agent.name}}_agt[i].is_active = UVM_PASSIVE;
-{% endif %}
-        uvm_config_db#(virtual {{agent.name}}_intf)::set(this, $sformatf("{{agent.name}}_%0d.*", id), "{{agent.name}}_intf", top_vif.{{agent.name}}_vif[i]);
+        {{agent.name}}_agt[i] = {{agent.name}}_agent::type_id::create($sformatf("{{agent.name}}_%0d", i), this);
+        {{agent.name}}_agt[i].cfg = cfg.{{agent.name}}_agt_cfg[i];
     end
 {% endfor %}
 {% for agent in cfg.subenvs %}
 
     foreach (sub_{{cfg.proj}}_{{agent.name}}_env[i]) begin
-        id = inst_id * {{cfg.proj}}_{{cfg.module}}_dec::{{cfg.proj|upper}}_{{agent.name|upper}}_ENV_NUM + i;
-        sub_{{cfg.proj}}_{{agent.name}}_env[i] = {{cfg.proj}}_{{agent.name}}_env::type_id::create($sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", id), this);
-        sub_{{cfg.proj}}_{{agent.name}}_env[i].inst_id = id;
-        sub_{{cfg.proj}}_{{agent.name}}_env[i].is_active = UVM_PASSIVE;
-        uvm_config_db#(virtual {{cfg.proj}}_{{agent.name}}_intf)::set(this, $sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", id), "top_vif", top_vif.{{cfg.proj}}_{{agent.name}}_env_vif[i]);
+        sub_{{cfg.proj}}_{{agent.name}}_env[i] = {{cfg.proj}}_{{agent.name}}_env::type_id::create($sformatf("{{cfg.proj}}_{{agent.name}}_sub_env_%0d", i), this);
+        sub_{{cfg.proj}}_{{agent.name}}_env[i].cfg = cfg.sub_{{cfg.proj}}_{{agent.name}}_env_cfg[i];
     end
 {% endfor %}
 endfunction
@@ -87,7 +71,7 @@ endfunction
 *******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_env::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    if (is_active == UVM_PASSIVE) begin
+    if (cfg.is_active == UVM_PASSIVE) begin
         return;
     end
 {% for agent in cfg.agents %}

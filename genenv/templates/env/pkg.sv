@@ -20,6 +20,7 @@ package {{cfg.proj}}_{{cfg.module}}_pkg;
     `include "{{cfg.proj}}_{{cfg.module}}_plus.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_model.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_e2e.sv"
+    `include "{{cfg.proj}}_{{cfg.module}}_env_cfg.sv"
     `include "{{cfg.proj}}_{{cfg.module}}_env.sv"
 endpackage
 import {{cfg.proj}}_{{cfg.module}}_pkg::*;

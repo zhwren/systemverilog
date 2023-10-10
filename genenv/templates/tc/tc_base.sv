@@ -5,7 +5,8 @@
 
 class {{cfg.proj}}_{{cfg.module}}_tc_base extends uvm_test;
     uvm_report_server svr;
-    {{cfg.proj}}_{{cfg.module}}_env env;
+    {{cfg.proj}}_{{cfg.module}}_env     env;
+    {{cfg.proj}}_{{cfg.module}}_env_cfg cfg;
 
     `uvm_component_utils({{cfg.proj}}_{{cfg.module}}_tc_base)
 
@@ -16,6 +17,7 @@ class {{cfg.proj}}_{{cfg.module}}_tc_base extends uvm_test;
     extern task main_phase(uvm_phase phase);
     extern function void report_phase(uvm_phase phase);
     extern virtual function void pre_abort();
+    extern virtual function void gen_env_config();
 
     extern task gen_clk();
     extern task gen_reset();
@@ -35,12 +37,28 @@ endfunction
 ** Author      : generator                                                     *
 ** Description : Create                                                        *
 *******************************************************************************/
+function void {{cfg.proj}}_{{cfg.module}}_tc_base::gen_env_config();
+    cfg.randomize();
+endfunction
+
+/*******************************************************************************
+** Time        : {{"%-62s*"|format(cfg.time)}}
+** Author      : generator                                                     *
+** Description : Create                                                        *
+*******************************************************************************/
 function void {{cfg.proj}}_{{cfg.module}}_tc_base::build_phase(uvm_phase phase);
     super.build_phase(phase);
 
     svr = uvm_report_server::get_server();
     svr.set_max_quit_count(plus_{{cfg.proj}}_{{cfg.module}}::stop_error_cnt);
+
+    cfg = {{cfg.proj}}_{{cfg.module}}_env_cfg::type_id::create("env_cfg");
+    cfg.vif = harness.top_if;
+
+    gen_env_config();
+
     env = {{cfg.proj}}_{{cfg.module}}_env::type_id::create("env", this);
+    env.cfg = cfg;
 endfunction
 
 /*******************************************************************************

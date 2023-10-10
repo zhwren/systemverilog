@@ -36,6 +36,7 @@ package common_pkg;
     import uvm_pkg::*;
     `include "plus_define.sv"
     `include "connector.sv"
+    `include "configuration.sv"
 endpackage
 import common_pkg::*;
 

@@ -10,7 +10,6 @@ class {{agent.name}}_driver extends uvm_driver#({{agent.name}}_xaction);
     `uvm_component_utils({{agent.name}}_driver)
 
     extern function new(string name="{{agent.name}}_driver", uvm_component parent=null);
-    extern function void connect_phase(uvm_phase phase);
     extern task run_phase(uvm_phase phase);
     extern task send_one_package();
     extern task send_random_data();
@@ -23,17 +22,6 @@ endclass
 *******************************************************************************/
 function {{agent.name}}_driver::new(string name="{{agent.name}}_driver", uvm_component parent=null);
     super.new(name, parent);
-endfunction
-
-/*******************************************************************************
-** Time        : {{"%-62s*"|format(cfg.time)}}
-** Author      : generator                                                     *
-** Description : Create                                                        *
-*******************************************************************************/
-function void {{agent.name}}_driver::connect_phase(uvm_phase phase);
-    if (!uvm_config_db#(virtual {{agent.name}}_intf)::get(this, "", "{{agent.name}}_intf", bus)) begin
-        `uvm_fatal(get_name(), $sformatf("{{agent.name}}_intf_%0d is null!", inst_id))
-    end
 endfunction
 
 /*******************************************************************************

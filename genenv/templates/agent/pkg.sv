@@ -17,6 +17,7 @@ package {{agent.name}}_pkg;
     `include "{{agent.name}}_monitor.sv"
     `include "{{agent.name}}_driver.sv"
     //`include "{{agent.name}}_cov.sv"
+    `include "{{agent.name}}_agent_cfg.sv"
     `include "{{agent.name}}_agent.sv"
 endpackage
 import {{agent.name}}_pkg::*;

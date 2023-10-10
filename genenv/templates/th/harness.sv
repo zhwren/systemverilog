@@ -11,8 +11,7 @@ import uvm_pkg::*;
 module harness;
     logic clk, rst_n, before_reset;
 
-    virtual {{cfg.proj}}_{{cfg.module}}_intf top_vif;
-    {{cfg.proj}}_{{cfg.module}}_intf         top_if(clk, rst_n);
+    {{cfg.proj}}_{{cfg.module}}_intf top_if(clk, rst_n);
 
     `include "../th/module_inst.sv"
 
@@ -24,8 +23,6 @@ module harness;
 
 {% endfor %}
     initial begin
-        top_vif = top_if;
-        uvm_config_db#(virtual {{cfg.proj}}_{{cfg.module}}_intf)::set(null, "uvm_test_top.env", "top_vif", top_vif);
         `ifdef DUMP_FSDB
             $fsdbDumpfile("t.fsdb");
             $fsdbDumpvars(0);
