@@ -1,0 +1,66 @@
+{% extends "index.html" %}
+{% block header %}
+<main>
+  <h1 class="visually-hidden">Headers examples</h1>
+  <div class="container">
+    <header class="d-flex justify-content-center py-3">
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+		<li class="nav-item"><a href="/login" class="nav-link">Login</a></li>
+        <li class="nav-item"><a href="/signup" class="nav-link active">Sign-up</a></li>
+      </ul>
+	  
+	  <!--div class="col-md-3 text-end">
+	    <a href="/login" class="nav-link active">Login</a>
+		<a href="/signup" class="nav-link">Sign-up</a>
+      </div-->
+    </header>
+  </div>
+
+  <!--div class="container-fluid pb-3">
+    <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+      <div class="bg-light border rounded-3">
+        <br><br><br><br><br><br><br><br><br><br>
+      </div>
+      <div class="bg-light border rounded-3">
+        <br><br><br><br><br><br><br><br><br><br>
+      </div>
+    </div>
+  </div-->
+</main>
+{% endblock %}
+{% block context %}
+
+<h2 class="pb-2 border-bottom"></h2>
+<main class="form-signin w-100 m-auto">
+  <form action="/signup">
+    <img class="mb-4" src="../static/img/bootstrap-logo.svg" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+
+    <div class="form-floating">
+      <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+      <label for="floatingInput">Email address</label>
+    </div>
+	<div class="form-floating">
+      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+      <label for="floatingPassword">Password</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control" id="cfloatingPassword" placeholder="Password" required>
+      <label for="floatingPassword">CPassword</label>
+    </div>
+
+    <!--div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div-->
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+  </form>
+</main>
+</div>
+{% endblock %}
