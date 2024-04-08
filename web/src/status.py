@@ -1,4 +1,3 @@
-#!/bin/python3
 ########################################################################################################################
 ##                                                      _ooOoo_                                                       ##
 ##                                                     o8888888o                                                      ##
@@ -25,19 +24,13 @@
 ########################################################################################################################
 ## Author       : generator                                                                                           ##
 ## Email        : zhwren0211@whu.edu.cn                                                                               ##
-## Last modified: 2024-01-20 10:59:15                                                                                 ##
-## Filename     : app.py                                                                                              ##
+## Last modified: 2024-04-08 21:44:33                                                                                 ##
+## Filename     : statuc.py                                                                                           ##
 ## Phone Number :                                                                                                     ##
 ## Discription  :                                                                                                     ##
 ########################################################################################################################
-import flask
-from src.usermanager import UserManager
+from enum import IntEnum
 
-app = flask.Flask(__name__)
-app.register_blueprint(UserManager())
-
-@app.route("/")
-def show_home_page():
-    return flask.render_template("index.html")
-
-app.run(debug=True)
+class Status:
+    FAILED  = 0
+    SUCCESS = 1

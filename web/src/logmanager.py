@@ -1,4 +1,3 @@
-#!/bin/python3
 ########################################################################################################################
 ##                                                      _ooOoo_                                                       ##
 ##                                                     o8888888o                                                      ##
@@ -25,19 +24,32 @@
 ########################################################################################################################
 ## Author       : generator                                                                                           ##
 ## Email        : zhwren0211@whu.edu.cn                                                                               ##
-## Last modified: 2024-01-20 10:59:15                                                                                 ##
-## Filename     : app.py                                                                                              ##
+## Last modified: 2024-04-07 21:35:06                                                                                 ##
+## Filename     : logmanager.py                                                                                       ##
 ## Phone Number :                                                                                                     ##
 ## Discription  :                                                                                                     ##
 ########################################################################################################################
-import flask
-from src.usermanager import UserManager
 
-app = flask.Flask(__name__)
-app.register_blueprint(UserManager())
+class LogManager:
+    logger = None
 
-@app.route("/")
-def show_home_page():
-    return flask.render_template("index.html")
+    def __init__(self, filename='app.run_log'):
+        self.filename = filename
+        pass
 
-app.run(debug=True)
+    @staticmethod
+    def get_instance(filename='app.run_log'):
+        if (LogManager.logger == None):
+            LogManager.logger = LogManager(filename)
+        return LogManager.logger
+
+    def write(self, info):
+        pass
+
+####################################################################################################################
+## Time        : 2024-04-07 21:38:29                                                                              ##
+## Author      : generator                                                                                        ##
+## Description : Create                                                                                           ##
+####################################################################################################################
+if __name__ == "__main__":
+    LogManager.get_instance().write("123")
